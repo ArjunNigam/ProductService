@@ -32,7 +32,7 @@ public class FakeStoreProductService implements ProductService{
         //  RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<FakeStoreProductDto> responseEntity =
                 restTemplate.getForEntity(
-                        "http://fakestoreapi.com/products/" + productId,
+                        "https://fakestoreapi.com/products/" + productId,
                         FakeStoreProductDto.class
                 ); // Whatever response you will get from this url, capture that response into object of FakeStoreProductDto type. .class just represents the type of the url
 
