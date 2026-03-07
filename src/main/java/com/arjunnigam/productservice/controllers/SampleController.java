@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController // This annotation indicates that this class is a Spring MVC Controller
 // Rest Controller means it is going to host REST HTTP   APIs (Web APIs)
 @RequestMapping("/sample") //endpoint = /sample
-public class SampleController {
+public class  SampleController {
 /*
 amazon.in/orders => OrderController
 If any request comes to /orders pass it to OrderController

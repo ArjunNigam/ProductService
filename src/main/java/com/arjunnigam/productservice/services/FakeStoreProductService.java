@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -22,7 +23,15 @@ public class FakeStoreProductService implements ProductService{
     public List<Product> getAllProducts() {
 
         // TODO: HW
-        return null;
+        ResponseEntity<FakeStoreProductDto[]> listResponseEntity = restTemplate.getForEntity("https://fakestoreapi.com/products",
+                                                                                                   FakeStoreProductDto[].class);
+        FakeStoreProductDto[] fakeStoreProductDtoList = listResponseEntity.getBody();
+        List<Product> products = new ArrayList<>();
+        for(FakeStoreProductDto dto : fakeStoreProductDtoList)
+        {
+            products.add(convertFakeStoreProductDtoToProduct(dto));
+        }
+        return products;
     }
 
     @Override
@@ -34,7 +43,7 @@ public class FakeStoreProductService implements ProductService{
                 restTemplate.getForEntity(
                         "https://fakestoreapi.com/products/" + productId,
                         FakeStoreProductDto.class
-                ); // Whatever response you will get from this url, capture that response into object of FakeStoreProductDto type. .class just represents the type of the url
+                ); // Whatever response you will get from this url, capture that response into object of FakeStoreProductDto type. .class just represents the type of the object
 
                 return convertFakeStoreProductDtoToProduct(responseEntity.getBody());
 
