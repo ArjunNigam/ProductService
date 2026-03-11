@@ -73,6 +73,7 @@ public class FakeStoreProductService implements ProductService{
         product.setCategory(category);
         product.setId(fakeStoreProductDto.getId());
         return product;
+
     }
     @Override
     public Product createProduct(Product product) {
