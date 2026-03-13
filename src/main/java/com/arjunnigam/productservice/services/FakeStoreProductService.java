@@ -6,12 +6,13 @@ import com.arjunnigam.productservice.models.Product;
 import dtos.FakeStoreProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service("fakeStoreProductService")  // Name of the bean is fakeStoreProductService
 public class FakeStoreProductService implements ProductService{
     private RestTemplate restTemplate;
 

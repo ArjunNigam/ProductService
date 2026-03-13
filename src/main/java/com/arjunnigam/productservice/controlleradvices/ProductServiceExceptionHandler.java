@@ -12,15 +12,15 @@ public class ProductServiceExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)// If exception of type RuntimeException is coming, then this method gets executed.
     // Even if we have 100 Controllers, if any controller throws runtime exception, this method gets triggered automatically
-    public ResponseEntity<Void> handlerRuntimeException()
+    public ResponseEntity<String> handlerRuntimeException(RuntimeException e)
     {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex)
     {
-        return new ResponseEntity<>(ex.getProductId() + " is an invalid product ID", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.getProductId() + " is an invalid product ID." + " Please provide a valid productId.", HttpStatus.NOT_FOUND);
     }
 }
