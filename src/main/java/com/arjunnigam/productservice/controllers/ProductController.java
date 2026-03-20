@@ -1,6 +1,7 @@
 package com.arjunnigam.productservice.controllers;
 import java.util.*;
 
+import com.arjunnigam.productservice.commons.AuthCommons;
 import com.arjunnigam.productservice.exceptions.ProductNotFoundException;
 import com.arjunnigam.productservice.models.Product;
 import com.arjunnigam.productservice.services.ProductService;
@@ -24,9 +25,22 @@ public class ProductController {
         this.productService = productService;
     }
     // loclhost:8080/products/1
-    @GetMapping("/{productId}")
-    public Product getSingleProduct(@PathVariable("productId") Long productId) throws ProductNotFoundException {
-       return productService.getSingleProduct(productId);
+    @GetMapping("/{productId}/{tokenValue}")
+    public ResponseEntity<Product> getSingleProduct(@PathVariable("productId") Long productId, @PathVariable("tokenValue") String tokenValue) throws ProductNotFoundException
+    {
+        Product product = null;
+        ResponseEntity<Product> responseEntity = null;
+        if(AuthCommons.validateToken(tokenValue))
+        {
+            product =  productService.getSingleProduct(productId);
+            responseEntity = new ResponseEntity<>(product, HttpStatus.OK);
+
+        }
+        else
+        {
+            responseEntity = new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        return responseEntity;
     }
 
 
