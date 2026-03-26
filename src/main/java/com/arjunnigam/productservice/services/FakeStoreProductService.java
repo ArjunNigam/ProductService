@@ -5,6 +5,7 @@ import com.arjunnigam.productservice.models.Category;
 import com.arjunnigam.productservice.models.Product;
 import com.arjunnigam.productservice.dtos.FakeStoreProductDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,10 +19,12 @@ import java.util.Optional;
 @Service("fakeStoreProductService")  // Name of the bean is fakeStoreProductService
 public class FakeStoreProductService implements ProductService{
     private RestTemplate restTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public FakeStoreProductService(RestTemplate restTemplate)
+    public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate<String, Object> redisTemplate)
     {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -44,6 +47,18 @@ public class FakeStoreProductService implements ProductService{
         // make an HTTP call to fakestore api to get the product with the given ID.
         // https://fakestoreapi/cim/products/1
         //  RestTemplate restTemplate = new RestTemplate();
+
+
+        // First check if the product with the Id is present in the cache or not
+        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS","PRODUCT_" + productId);
+        if(product != null)
+        {
+            // Product was present in the cache - CACHE HIT
+                return product;
+        }
+
+        // CACHE MISS
+
         ResponseEntity<FakeStoreProductDto> responseEntity =
                 restTemplate.getForEntity(
                         "https://fakestoreapi.com/products/" + productId,
@@ -55,7 +70,12 @@ public class FakeStoreProductService implements ProductService{
                 {
                     throw new ProductNotFoundException(productId);
                 }
-                return convertFakeStoreProductDtoToProduct(responseEntity.getBody());
+
+                Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+
+                // Before returning the product, store it in redis
+                redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_" + productId, product);
+                return product;
 
 
     }
