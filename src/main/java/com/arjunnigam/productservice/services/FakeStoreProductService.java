@@ -71,7 +71,7 @@ public class FakeStoreProductService implements ProductService{
                     throw new ProductNotFoundException(productId);
                 }
 
-                Product product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+                product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
 
                 // Before returning the product, store it in redis
                 redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_" + productId, product);
